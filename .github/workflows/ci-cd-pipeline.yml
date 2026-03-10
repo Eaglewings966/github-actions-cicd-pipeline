@@ -15,6 +15,7 @@ on:
 env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: emmanuel-app
+  ECS_TASK_DEFINITION: emmanuel-service
   ECS_SERVICE: emmanuel-service
   ECS_CLUSTER: emmanuel-cluster
   CONTAINER_NAME: emmanuel-app
@@ -107,8 +108,10 @@ jobs:
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
+        if: ${{ secrets.CODECOV_TOKEN != '' || github.event.repository.private == false }}
         with:
           directory: app/coverage
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   # Job 4 - Build Docker Image
   build:
@@ -120,7 +123,7 @@ jobs:
       id-token: write
 
     outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
+      image-uri: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ steps.meta.outputs.version }}
 
     steps:
       - name: Checkout code
@@ -146,8 +149,7 @@ jobs:
         with:
           images: ${{ steps.login-ecr.outputs.registry }}/${{ env.ECR_REPOSITORY }}
           tags: |
-            type=sha,prefix={{branch}}-
-            type=ref,event=branch
+            type=sha,format=short
             type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
 
       - name: Build and push Docker image
@@ -185,10 +187,18 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Validate task definition exists
+        run: |
+          set -euo pipefail
+          aws ecs describe-task-definition \
+            --task-definition "${{ env.ECS_TASK_DEFINITION }}" \
+            --query 'taskDefinition.taskDefinitionArn' \
+            --output text >/dev/null
+
       - name: Download task definition
         run: |
           aws ecs describe-task-definition \
-            --task-definition ${{ env.ECS_SERVICE }} \
+            --task-definition ${{ env.ECS_TASK_DEFINITION }} \
             --query taskDefinition > task-definition.json
 
       - name: Update ECS task definition
@@ -197,7 +207,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ needs.build.outputs.image-tag }}
+          image: ${{ needs.build.outputs.image-uri }}
 
       - name: Deploy to ECS
         uses: aws-actions/amazon-ecs-deploy-task-definition@v2
@@ -211,4 +221,4 @@ jobs:
         run: |
           echo "✅ Deployment successful!"
           echo "🚀 Application deployed to AWS ECS"
-          echo "📦 Image: ${{ needs.build.outputs.image-tag }}"
+          echo "📦 image: ${{ needs.build.outputs.image-uri }}"
