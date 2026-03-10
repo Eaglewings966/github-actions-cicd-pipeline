@@ -31,18 +31,12 @@ app.get("/", (req, res) => {
   res.status(200).json({
     message: "Welcome to Emmanuel Ubani's CI/CD Demo App",
     description: "Production grade CI/CD pipeline using GitHub Actions",
-    stack: [
-      "Node.js",
-      "Docker",
-      "GitHub Actions",
-      "AWS ECR",
-      "AWS ECS"
-    ],
+    stack: ["Node.js", "Docker", "GitHub Actions", "AWS ECR", "AWS ECS"],
     links: {
       github: "https://github.com/Eaglewings966",
       linkedin: "https://www.linkedin.com/in/ubaniemmanuel",
-      portfolio: "https://ops-run.lovable.app"
-    }
+      portfolio: "https://ops-run.lovable.app",
+    },
   });
 });
 
@@ -52,7 +46,7 @@ app.get("/api/v1/status", (req, res) => {
     status: "operational",
     uptime: process.uptime(),
     memory: process.memoryUsage(),
-    timestamp: new Date().toISOString()
+    timestamp: new Date().toISOString(),
   });
 });
 
@@ -60,7 +54,7 @@ app.get("/api/v1/status", (req, res) => {
 app.use((req, res) => {
   res.status(404).json({
     error: "Route not found",
-    message: `The route ${req.originalUrl} does not exist`
+    message: `The route ${req.originalUrl} does not exist`,
   });
 });
 
@@ -69,7 +63,7 @@ app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({
     error: "Internal server error",
-    message: err.message
+    message: err.message,
   });
 });
 
@@ -80,4 +74,4 @@ app.listen(PORT, () => {
   console.log(`🌍 Environment: ${process.env.NODE_ENV || "development"}`);
 });
 
-module.exports = app; 
+module.exports = app;
