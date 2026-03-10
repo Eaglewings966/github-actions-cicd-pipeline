@@ -60,6 +60,9 @@ jobs:
       contents: read
       security-events: write
       actions: read
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      TRIVY_DOWNLOAD_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
