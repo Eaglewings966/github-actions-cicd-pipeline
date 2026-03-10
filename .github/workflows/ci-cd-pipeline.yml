@@ -70,15 +70,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           set -euo pipefail
-          TRIVY_VERSION="0.60.0"
-          URL="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
-          AUTH_HEADER=()
-          if [ -n "${GITHUB_TOKEN:-}" ]; then
-            AUTH_HEADER=(-H "Authorization: token ${GITHUB_TOKEN}")
-          fi
-          curl -fsSL "${AUTH_HEADER[@]}" -o trivy.tar.gz "$URL"
-          tar -xzf trivy.tar.gz trivy
-          sudo mv trivy /usr/local/bin/trivy
+          curl -fsSL https://raw.githubusercontent.com/aquasecurity/trivy/main/contrib/install.sh | sh -s -- -b /usr/local/bin
 
       - name: Run Trivy vulnerability scanner
         run: |
