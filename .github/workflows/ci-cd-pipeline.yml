@@ -108,7 +108,7 @@ jobs:
 
       - name: Upload coverage reports
         uses: codecov/codecov-action@v4
-        if: ${{ secrets.CODECOV_TOKEN != '' || github.event.repository.private == false }}
+        if: ${{ github.event.repository.private == false }}
         with:
           directory: app/coverage
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -222,3 +222,5 @@ jobs:
           echo "✅ Deployment successful!"
           echo "🚀 Application deployed to AWS ECS"
           echo "📦 image: ${{ needs.build.outputs.image-uri }}"
+
+
