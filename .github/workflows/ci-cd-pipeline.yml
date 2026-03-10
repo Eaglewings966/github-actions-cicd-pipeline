@@ -60,24 +60,29 @@ jobs:
       contents: read
       security-events: write
       actions: read
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      TRIVY_DOWNLOAD_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@0.30.0
+      - name: Install Trivy
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          scan-type: "fs"
-          scan-ref: "."
-          severity: "CRITICAL,HIGH"
-          format: "sarif"
-          output: "trivy-results.sarif"
+        run: |
+          set -euo pipefail
+          TRIVY_VERSION="0.60.0"
+          URL="https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
+          AUTH_HEADER=()
+          if [ -n "${GITHUB_TOKEN:-}" ]; then
+            AUTH_HEADER=(-H "Authorization: token ${GITHUB_TOKEN}")
+          fi
+          curl -fsSL "${AUTH_HEADER[@]}" -o trivy.tar.gz "$URL"
+          tar -xzf trivy.tar.gz trivy
+          sudo mv trivy /usr/local/bin/trivy
+
+      - name: Run Trivy vulnerability scanner
+        run: |
+          trivy fs . --severity CRITICAL,HIGH --format sarif --output trivy-results.sarif
 
       - name: Upload Trivy scan results
         uses: github/codeql-action/upload-sarif@v4
