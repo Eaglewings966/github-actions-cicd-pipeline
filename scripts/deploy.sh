@@ -12,11 +12,11 @@ BLUE='\033[0;34m'
 NC='\033[0m'
 
 # Variables
-APP_NAME="emmanuel-cicd-app"
+APP_NAME="devops-demo-app"
 AWS_REGION="us-east-1"
-ECR_REPOSITORY="emmanuel-app"
-ECS_CLUSTER="emmanuel-cluster"
-ECS_SERVICE="emmanuel-service"
+ECR_REPOSITORY="devops-demo-app"
+ECS_CLUSTER="devops-demo-cluster"
+ECS_SERVICE="devops-demo-service"
 
 # Functions
 log_info() {

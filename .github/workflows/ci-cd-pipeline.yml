@@ -14,11 +14,11 @@ on:
 
 env:
   AWS_REGION: us-east-1
-  ECR_REPOSITORY: emmanuel-app
-  ECS_TASK_DEFINITION: emmanuel-service
-  ECS_SERVICE: emmanuel-service
-  ECS_CLUSTER: emmanuel-cluster
-  CONTAINER_NAME: emmanuel-app
+  ECR_REPOSITORY: devops-demo-app
+  ECS_TASK_DEFINITION: devops-demo-app
+  ECS_SERVICE: devops-demo-service
+  ECS_CLUSTER: devops-demo-cluster
+  CONTAINER_NAME: devops-demo-app
 
 jobs:
   # Job 1 - Code Quality Check
