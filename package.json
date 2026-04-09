@@ -1,0 +1,12 @@
+{
+  "name": "github-actions-cicd-pipeline",
+  "private": true,
+  "scripts": {
+    "test": "npm --prefix app test",
+    "lint": "npm --prefix app run lint",
+    "format": "npm --prefix app run format",
+    "format:check": "npm --prefix app run format:check",
+    "start": "npm --prefix app start",
+    "dev": "npm --prefix app run dev"
+  }
+}

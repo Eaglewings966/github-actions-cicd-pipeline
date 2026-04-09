@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node index.js",
     "dev": "nodemon index.js",
-    "test": "jest --forceExit",
+    "test": "jest --runInBand --forceExit",
     "lint": "eslint . --ext .js",
     "format": "prettier --write .",
     "format:check": "prettier --check ."

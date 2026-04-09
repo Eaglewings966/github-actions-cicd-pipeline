@@ -1,8 +1,6 @@
 # Docker Compose Configuration
 # Author: Emmanuel Ubani - Cloud & DevOps Engineer
 
-version: "3.8"
-
 services:
   # Application Service
   app:
@@ -16,8 +14,6 @@ services:
       - NODE_ENV=development
       - PORT=3000
       - APP_VERSION=1.0.0
-    env_file:
-      - ../.env
     volumes:
       - ../app:/app
       - /app/node_modules
